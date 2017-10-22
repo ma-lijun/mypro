@@ -22,25 +22,25 @@ def register(request):
         Passport.objects.add_one_passport(username=username, password=password, email=email)
         # # 3.给用户注册邮箱发邮件
         register_success_send_mail.delay(username=username, password=password, email=email)
-        return redirect('/df_user/login/')
+        return redirect('/user/login/')
 
 
-def register_handle(request):
-    # 接受数据
-    username = request.POST.get('user_name')
-    password = request.POST.get('pwd')
-    email = request.POST.get('email')
-    # 保存进数据库
-    # passport = Passport(username=name, password=password, email=email)
-    # passport.save()
-    # 将保存数据的方法提取到模型管理器类
-    Passport.objects.add_one_passport(username=username, password=password, email=email)
-    # # 3.给用户注册邮箱发邮件
-    # message = '<h1>欢迎您成为天天生鲜注册会员</h1>请记好您的信息:<br/>用户名:'+username+'<br/>密码：'+password
-    # send_mail('欢迎信息', '', settings.EMAIL_FROM, [email], html_message=message)
-    register_success_send_mail.delay(username=username, password=password, email=email)
-    # send_register_success_mail.delay(username=username, password=password, email=email)
-    return redirect('/df_user/login/')
+# def register_handle(request):
+#     # 接受数据
+#     username = request.POST.get('user_name')
+#     password = request.POST.get('pwd')
+#     email = request.POST.get('email')
+#     # 保存进数据库
+#     # passport = Passport(username=name, password=password, email=email)
+#     # passport.save()
+#     # 将保存数据的方法提取到模型管理器类
+#     Passport.objects.add_one_passport(username=username, password=password, email=email)
+#     # # 3.给用户注册邮箱发邮件
+#     # message = '<h1>欢迎您成为天天生鲜注册会员</h1>请记好您的信息:<br/>用户名:'+username+'<br/>密码：'+password
+#     # send_mail('欢迎信息', '', settings.EMAIL_FROM, [email], html_message=message)
+#     register_success_send_mail.delay(username=username, password=password, email=email)
+#     # send_register_success_mail.delay(username=username, password=password, email=email)
+#     return redirect('/df_user/login/')
 
 
 @require_GET
@@ -56,3 +56,7 @@ def check_user_exist(request):
         res=1
     return JsonResponse({'res':res})
 
+
+# /user/login/
+def login(request):
+    return render(request, 'df_user/login.html')
