@@ -9,6 +9,14 @@ $(function(){
 
 	$('#user_name').blur(function() {
 		check_user_name();
+		// 用户名长度合法
+		console.log(1)
+		if(error_name==false){
+			console.log(2)
+			// 检验用户名是否存在
+			check_user_exist();
+		}
+
 	});
 
 	$('#pwd').blur(function() {
@@ -37,6 +45,22 @@ $(function(){
 		}
 	});
 
+	// 检查用户名是否存在
+	function check_user_exist() {
+		username = $('#user_name').val()
+		$.get('/user/check_user_exist/?username='+username, function (data) {
+			alert(data);
+			// 如果存在就 res==0
+			if (data.res == 0){
+				error_name = true;
+				$('#user_name').next().show().text('用户名已经存在!')
+			}
+			else {
+				error_name = false;
+			}
+			// 如果不存在 res=1
+        })
+    }
 
 	function check_user_name(){
 		var len = $('#user_name').val().length;
@@ -105,7 +129,7 @@ $(function(){
 	}
 
 
-	$('#reg_form').submit(function() {
+	$('#reg_form2').submit(function() {
 		check_user_name();
 		check_pwd();
 		check_cpwd();
@@ -121,12 +145,5 @@ $(function(){
 		}
 
 	});
-
-
-
-
-
-
-
 
 })
