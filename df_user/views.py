@@ -60,7 +60,13 @@ def check_user_exist(request):
 
 # /user/login/
 def login(request):
-    return render(request, 'df_user/login.html')
+    # 实现记住用户名就能真正显示用户名的后台逻辑
+    # 获取cookie   看user是否在其中
+    if 'username' in request.COOKIES:
+        username = request.COOKIES['username']
+    else:
+        username = ''
+    return render(request, 'df_user/login.html', {'username':username})
 
 
 # /user/login_check/
@@ -68,10 +74,15 @@ def login_check(request):
     # 接收用户名和密码
     username = request.POST.get('username')
     password = request.POST.get('password')
+    jres = JsonResponse({'res': 1})
     # 查找用户名和密码是否存, 使用命名参数容错能力更强
     passport = Passport.objects.get_one_passport(username=username, password=password)
     if passport:
-        return JsonResponse({'res': 1})
+        # 获取是否需要记住用户名  返回结果为字符串类型的 true / false
+        remember = request.POST.get('remember')
+        if remember == 'true':
+            jres.set_cookie('username', username, max_age=14*24*3600)
+        return jres
     else:
         return JsonResponse({'res': 0})
 

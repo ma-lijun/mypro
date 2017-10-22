@@ -15,7 +15,11 @@
                 password = $('#pwd').val()
                 csrf = $('input[name="csrfmiddlewaretoken"]').val()
                 // 传递给服务器的csrf名称为前端浏览器宣传后所生成的名称
-                temp = {'username':username, 'password':password, 'csrfmiddlewaretoken':csrf}
+
+                // 记住用户名  结果为true 或 false
+                remember= $('input[name="remember"]').is(':checked')
+
+                temp = {'username':username, 'password':password, 'csrfmiddlewaretoken':csrf, 'remember':remember}
                 // ajax 发送请求到服务器，存在返回 res为1 否则为0
                 $.post('/user/login_check/', temp, function (data) {
                     if(data.res == 0)
@@ -52,12 +56,12 @@
 				<div class="form_input">
 {#					<form>#}
                         {% csrf_token %}
-						<input type="text" id="username" class="name_input" placeholder="请输入用户名">
+						<input type="text" id="username" class="name_input" value="{{ username }}" placeholder="请输入用户名">
 						<div class="user_error">输入错误</div>
 						<input type="password" id="pwd" class="pass_input" placeholder="请输入密码">
 						<div class="pwd_error">输入错误</div>
 						<div class="more_input clearfix">
-							<input type="checkbox" name="">
+							<input type="checkbox" name="remember">
 							<label>记住用户名</label>
 							<a href="#">忘记密码</a>
 						</div>
