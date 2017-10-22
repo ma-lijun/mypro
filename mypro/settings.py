@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'df_user',
-)
+    'celery',
+    'djcelery',  # 注册celery应用
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -106,3 +108,25 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+
+# 发送邮件配置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.126.com' # smtp服务器地址
+EMAIL_PORT = 25
+# 发送邮件的邮箱
+EMAIL_HOST_USER = 'mlj0503@126.com'
+# 在邮箱中设置的客户端授权密码
+EMAIL_HOST_PASSWORD = '123456abc'
+# 收件人看到的发件人
+EMAIL_FROM = 'dailyfresh<mlj0503@126.com>'
+
+
+# celery 配置
+# import djcelery
+# djcelery.setup_loader()
+# BROKER_URL = 'redis://127.0.0.1:6379/2'
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://127.0.0.1:6379/2'

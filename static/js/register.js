@@ -49,7 +49,6 @@ $(function(){
 	function check_user_exist() {
 		username = $('#user_name').val()
 		$.get('/user/check_user_exist/?username='+username, function (data) {
-			alert(data);
 			// 如果存在就 res==0
 			if (data.res == 0){
 				error_name = true;

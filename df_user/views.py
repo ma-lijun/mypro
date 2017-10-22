@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from df_user.models import Passport
 from django.http import JsonResponse
-
+from django.core.mail import send_mail
+from django.conf import settings
+from df_user.tasks import register_success_send_mail
 
 # Create your views here.
 def register(request):
@@ -19,6 +21,11 @@ def register_handle(request):
     # passport.save()
     # 将保存数据的方法提取到模型管理器类
     Passport.objects.add_one_passport(username=username, password=password, email=email)
+    # # 3.给用户注册邮箱发邮件
+    # message = '<h1>欢迎您成为天天生鲜注册会员</h1>请记好您的信息:<br/>用户名:'+username+'<br/>密码：'+password
+    # send_mail('欢迎信息', '', settings.EMAIL_FROM, [email], html_message=message)
+    register_success_send_mail.delay(username=username, password=password, email=email)
+    # send_register_success_mail.delay(username=username, password=password, email=email)
     return redirect('/df_user/login/')
 
 
