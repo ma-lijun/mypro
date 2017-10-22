@@ -5,13 +5,14 @@ from utils.get_hash import get_hash
 
 class PassportManager(models.Manager):
     '''模型管理器类,一个模型类对应一个模型管理器类'''
+
     def add_one_passport(self, username, password, email):
         # 获取self所在的模型类
 
         models_name = self.model
         # 创建一个类对象
         # print(password)
-        print(get_hash(password),'1')
+        print(get_hash(password), '1')
         obj = models_name(username=username, password=get_hash(password), email=email)
 
         # 保存进入数据库
@@ -19,13 +20,19 @@ class PassportManager(models.Manager):
         # 返回对象
         return obj
 
-    def get_one_passport(self, username):
+    def get_one_passport(self, username, password=None):
         # 根据用户名查找账户信息
         try:
-            obj = self.get(username=username)
+            if password is None:
+                # 根据用户名查找账户
+                obj = self.get(username=username)
+            else:
+                # 根据用户名和密码查找账户信息，密码要使用哈希值
+                obj = self.get(username=username, password=get_hash(password))
         except self.model.DoesNotExist:
             obj = None
         return obj
+
 
 # 账户表
 class Passport(BaseModel):
