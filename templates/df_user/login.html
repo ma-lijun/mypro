@@ -18,10 +18,15 @@
                 temp = {'username':username, 'password':password, 'csrfmiddlewaretoken':csrf}
                 // ajax 发送请求到服务器，存在返回 res为1 否则为0
                 $.post('/user/login_check/', temp, function (data) {
-                    if(data.res==0)
+                    if(data.res == 0)
                     {
                         // 用户名不存在, 默认隐藏的元素展示出来先试用show()
-                        $('.user_error').show().text('用户名不存在！')
+                        $('.user_error').show().text('用户或密码错误！')
+                    }
+                    else
+                    {
+                        // 登录成功跳转页面
+                        location.href = '/'
                     }
 
                 })

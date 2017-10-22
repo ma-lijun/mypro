@@ -1,3 +1,4 @@
+# _*_ coding:utf-8 _*_
 from django.shortcuts import render, redirect
 from df_user.models import Passport
 from django.http import JsonResponse
@@ -51,10 +52,10 @@ def check_user_exist(request):
     # 检查用户名是否存在
     obj = Passport.objects.get_one_passport(username=username)
     if obj:
-        res=0
+        res = 0
     else:
-        res=1
-    return JsonResponse({'res':res})
+        res = 1
+    return JsonResponse({'res': res})
 
 
 # /user/login/
@@ -64,4 +65,13 @@ def login(request):
 
 # /user/login_check/
 def login_check(request):
-    return JsonResponse({'res':0})
+    # 接收用户名和密码
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    # 查找用户名和密码是否存, 使用命名参数容错能力更强
+    passport = Passport.objects.get_one_passport(username=username, password=password)
+    if passport:
+        return JsonResponse({'res': 1})
+    else:
+        return JsonResponse({'res': 0})
+
