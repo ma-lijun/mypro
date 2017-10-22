@@ -60,3 +60,8 @@ def check_user_exist(request):
 # /user/login/
 def login(request):
     return render(request, 'df_user/login.html')
+
+
+# /user/login_check/
+def login_check(request):
+    return JsonResponse({'res':0})

@@ -7,7 +7,28 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 	<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/register.js' %}"></script>
+    <script>
+        $(function () {
+            $('#btnlogin').click(function () {
+                // 获取用户名和密码，csrf_tocon
+                username = $('#username').val()
+                password = $('#pwd').val()
+                csrf = $('input[name="csrfmiddlewaretoken"]').val()
+                // 传递给服务器的csrf名称为前端浏览器宣传后所生成的名称
+                temp = {'username':username, 'password':password, 'csrfmiddlewaretoken':csrf}
+                // ajax 发送请求到服务器，存在返回 res为1 否则为0
+                $.post('/user/login_check/', temp, function (data) {
+                    if(data.res==0)
+                    {
+                        // 用户名不存在, 默认隐藏的元素展示出来先试用show()
+                        $('.user_error').show().text('用户名不存在！')
+                    }
+
+                })
+            })
+
+        })
+    </script>
 </head>
 <body>
 	<div class="login_top clearfix">
@@ -24,18 +45,19 @@
 					<a href="#">立即注册</a>
 				</div>
 				<div class="form_input">
-					<form>
-						<input type="text" name="username" class="name_input" placeholder="请输入用户名">
+{#					<form>#}
+                        {% csrf_token %}
+						<input type="text" id="username" class="name_input" placeholder="请输入用户名">
 						<div class="user_error">输入错误</div>
-						<input type="password" name="pwd" class="pass_input" placeholder="请输入密码">
+						<input type="password" id="pwd" class="pass_input" placeholder="请输入密码">
 						<div class="pwd_error">输入错误</div>
 						<div class="more_input clearfix">
 							<input type="checkbox" name="">
 							<label>记住用户名</label>
 							<a href="#">忘记密码</a>
 						</div>
-						<input type="submit" name="" value="登录" class="input_submit">
-					</form>
+						<input type="submit" id="btnlogin" value="登录" class="input_submit">
+{#					</form>#}
 				</div>
 			</div>
 		</div>

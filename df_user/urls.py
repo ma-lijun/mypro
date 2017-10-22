@@ -8,4 +8,5 @@ urlpatterns = [
     # url(r'^register_handle/$', views.register_handle),  # 实现用户信息的注册
     url(r'^check_user_exist/$', views.check_user_exist),  # 检查用户是否存在
     url(r'^login/$', views.login),  # 用户登录页
+    url(r'^login_check/$', views.login_check),   # 验证登录名是否存在
 ]
