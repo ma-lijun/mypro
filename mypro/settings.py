@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'mypro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DFpro',
+        'NAME': 'dailyfresh',
         'USER': 'root',
         'PASSWORD': 'mysql',
         'HOST': 'localhost',
