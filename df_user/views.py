@@ -86,3 +86,22 @@ def login_check(request):
     else:
         return JsonResponse({'res': 0})
 
+
+# /user/logout/
+def logout(request):
+    pass
+
+
+# /user/
+def user(request):
+    return render(request, 'df_user/user_center_info.html', {'page': 'user'})
+
+
+# /user/address/
+def address(request):
+    return render(request, 'df_user/user_center_site.html', {'page': 'address'})
+
+
+# /user/order/
+def order(request):
+    return render(request, 'df_user/user_center_order.html', {'page': 'order'})
