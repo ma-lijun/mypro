@@ -97,7 +97,9 @@ def login_check(request):
 
 # /user/logout/
 def logout(request):
-    pass
+    # 退出登录要删除session信息，否则不能真正的退出
+    request.session.flush()
+    return render(request, 'df_user/login.html')
 
 
 # /user/
