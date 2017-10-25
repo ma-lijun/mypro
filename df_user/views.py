@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from df_user.tasks import register_success_send_mail
 from django.views.decorators.http import require_GET,require_POST,require_http_methods
+from utils.decorators import loginrequied
 
 
 # 使用django的内置装饰器功能，显示访问方式,优化register接口设计，删除多余接口register_handle
@@ -66,7 +67,7 @@ def login(request):
         username = request.COOKIES['username']
     else:
         username = ''
-    return render(request, 'df_user/login.html', {'username':username})
+    return render(request, 'df_user/login.html', {'username': username})
 
 
 # /user/login_check/
@@ -74,14 +75,21 @@ def login_check(request):
     # 接收用户名和密码
     username = request.POST.get('username')
     password = request.POST.get('password')
-    jres = JsonResponse({'res': 1})
     # 查找用户名和密码是否存, 使用命名参数容错能力更强
     passport = Passport.objects.get_one_passport(username=username, password=password)
+    # 如果查到， json {'res':1}  如果查不到，返回{'res':0}
     if passport:
+        # 用户名密码正确
+        jres = JsonResponse({'res': 1})
         # 获取是否需要记住用户名  返回结果为字符串类型的 true / false
         remember = request.POST.get('remember')
         if remember == 'true':
             jres.set_cookie('username', username, max_age=14*24*3600)
+        # 记录登录状态
+        request.session['islogin'] = True
+        request.session['username'] = username
+        # 登录账户的id
+        request.session['passport_id'] = passport.id
         return jres
     else:
         return JsonResponse({'res': 0})
@@ -93,15 +101,18 @@ def logout(request):
 
 
 # /user/
+@loginrequied
 def user(request):
     return render(request, 'df_user/user_center_info.html', {'page': 'user'})
 
 
 # /user/address/
+@loginrequied
 def address(request):
     return render(request, 'df_user/user_center_site.html', {'page': 'address'})
 
 
 # /user/order/
+@loginrequied
 def order(request):
     return render(request, 'df_user/user_center_order.html', {'page': 'order'})
