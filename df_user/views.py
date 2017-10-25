@@ -77,10 +77,22 @@ def login_check(request):
     password = request.POST.get('password')
     # 查找用户名和密码是否存, 使用命名参数容错能力更强
     passport = Passport.objects.get_one_passport(username=username, password=password)
+    # # 判断登录之前的地址是否需要记录
+    # if request.session.has_key('pre_url_path'):
+    #     next = request.session['pre_url_path']
+    # else:
+    #     # 首页地址
+    #     next = '/'
     # 如果查到， json {'res':1}  如果查不到，返回{'res':0}
     if passport:
+        # 判断登录之前的地址是否需要记录， 只有登录成功才会有session记录，之外的session被flush了，所有必须下载登录成功的判断里
+        if request.session.has_key('pre_url_path'):
+            next = request.session['pre_url_path']
+        else:
+            # 首页地址
+            next = '/'
         # 用户名密码正确
-        jres = JsonResponse({'res': 1})
+        jres = JsonResponse({'res': 1, 'next': next})
         # 获取是否需要记住用户名  返回结果为字符串类型的 true / false
         remember = request.POST.get('remember')
         if remember == 'true':

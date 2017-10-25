@@ -51,6 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'utils.middleware.UrlPathRecordMiddleWare',  #  将自己写的中间件注册进来
 )
 
 ROOT_URLCONF = 'mypro.urls'
