@@ -61,15 +61,19 @@ class AddressManager(models.Manager):
                         zip_code):
         '''添加一个收货地址'''
         addr = self.get_one_address(passport_id=passport_id)
-        models_class =  self.model
+        models_class = self.model
         if addr is None:
             '''没有默认收货地址'''
-            addr = models_class(passport_id=passport_id,recipient_name=recipient_name, recipient_addr=recipient_addr
-                                ,recipient_phone=recipient_phone,zip_code=zip_code, is_default=True)
+            addr = models_class(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr
+                                , recipient_phone=recipient_phone, zip_code=zip_code, is_default=True)
+            print('wu: ',addr.passport_id)
         else:
             '''有默认收货地址'''
-            addr = models_class(passport_id=passport_id,recipient_name=recipient_name, recipient_addr=recipient_addr
-                                ,recipient_phone=recipient_phone,zip_code=zip_code)
+            addr = models_class(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr
+                                , recipient_phone=recipient_phone, zip_code=zip_code)
+            print('you: ',addr)
+        addr.save()
+        return addr
 
 
 # 地址信息模型类

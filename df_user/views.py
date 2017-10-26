@@ -126,19 +126,20 @@ def user(request):
 def address(request):
     passport_id = request.session['passport_id']
     # 根据用户id获取默认收货地址
-    # addr = Address.objects.get_one_address(passport_id)
-    # 获取前端传递的数据
-    recipient_name = request.POST.get('recipient_name')
-    recipient_addr = request.POST.get('recipient_addr')
-    recipient_phone = request.POST.get('recipient_phone')
-    zip_code = request.POST.get('zip_code')
     if request.method == 'GET':
         # 获取用户默认收货地址
         addr = Address.objects.get_one_address(passport_id=passport_id)
         return render(request, 'df_user/user_center_site.html', {'page': 'address', 'addr':addr})
     else:
+        # 获取前端传递的数据
+        recipient_name = request.POST.get('recipient_name')
+        recipient_addr = request.POST.get('recipient_addr')
+        recipient_phone = request.POST.get('recipient_phone')
+        zip_code = request.POST.get('zip_code')
+        print(recipient_addr)
         addr = Address.objects.add_one_address(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr,
                                                recipient_phone=recipient_phone, zip_code=zip_code)
+
         return redirect('/user/address/')
 
 
