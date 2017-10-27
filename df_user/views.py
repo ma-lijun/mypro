@@ -117,7 +117,10 @@ def logout(request):
 # /user/
 @loginrequied
 def user(request):
-    return render(request, 'df_user/user_center_info.html', {'page': 'user'})
+    passport_id = request.session['passport_id']
+    # 根据用户id获取默认收货地址
+    addr = Address.objects.get_one_address(passport_id=passport_id)
+    return render(request, 'df_user/user_center_info.html', {'page': 'user', 'addr': addr})
 
 
 # /user/address/
