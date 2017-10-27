@@ -8,16 +8,6 @@ class PassportManager(BaseManager):
     '''模型管理器类,一个模型类对应一个模型管理器类'''
 
     def add_one_passport(self, username, password, email):
-        # # 获取self所在的模型类
-        # models_name = self.model
-        # # 创建一个类对象
-        # # print(password)
-        # print(get_hash(password), '1')
-        # obj = models_name(username=username, password=get_hash(password), email=email)
-        #
-        # # 保存进入数据库
-        # obj.save()
-
         # 利用抽象的模型管理器基类的方法保存数据
         obj = self.create_one_object(username=username, password=get_hash(password), email=email)
         # 返回对象
@@ -55,9 +45,6 @@ class AddressManager(BaseManager):
     def get_one_address(self, passport_id):
         '''根据用户的passport_id查询其默认收货地址'''
         try:
-            # 抽象基类之前的用法
-            # addr = self.get(passport_id=passport_id, is_default=True)
-
             # 使用抽象的基类
             addr = self.get_one_object(passport_id=passport_id, is_default=True)
         except self.model.DoesNotExist:

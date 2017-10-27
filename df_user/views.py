@@ -141,8 +141,7 @@ def address(request):
         zip_code = request.POST.get('zip_code')
         print(recipient_addr)
         addr = Address.objects.add_one_address(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr,
-                                               recipient_phone=recipient_phone, zip_code=zip_code)
-
+                                               recipient_phone=recipient_phone, zip_code=zip_code, is_default=False)
         return redirect('/user/address/')
 
 
