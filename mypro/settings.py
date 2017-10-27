@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'df_user',
     'celery',
+    'df_goods',
     'djcelery',  # 注册celery应用
 ]
 
