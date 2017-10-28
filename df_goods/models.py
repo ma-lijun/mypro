@@ -4,10 +4,32 @@ from db.base_manager import BaseManager
 from df_goods.enums import *
 from tinymce.models import HTMLField
 
+
 # Create your models here.
 class GoodsManager(BaseManager):
-    pass
+    """商品模型管理器类"""
+    def get_goods_by_type(self, goods_type_id, limit=None, sort='default'):
+        '''根据商品类型id获取商品信息'''
+        # 定义一个元组order_by , 指定默认排列顺序
+        order_by = ('-pk', )
+        if sort == 'new':
+            '''查询新品信息'''
+            order_by = ('create_time',)
+        elif sort == 'hot':
+            '''按照商品销量查询商品信息'''
+            order_by = ('-goods_sales', )
+        elif sort == ('goods_price',):
+            # 按照商品价格排序
+            order_by = ('goods_price', )
 
+        # get_object_list 中 filters是字典类型， order_by是元组类型
+        goods_list = self.get_object_list(filters={'goods_type_id':goods_type_id},order_by=order_by )
+
+        # 根据传入的limit取出查询集中的几条数据
+        if limit:
+            # 对查询集进行切片
+            goods_list = goods_list[:limit]
+        return goods_list
 
 
 class Goods(BaseModel):
@@ -42,6 +64,6 @@ class Goods(BaseModel):
     objects = GoodsManager()
 
     class Meta:
-        db_table='s_goods'
+        db_table = 's_goods'
 
 
