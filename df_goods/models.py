@@ -5,6 +5,22 @@ from df_goods.enums import *
 from tinymce.models import HTMLField
 
 
+class GoodsLogicManager(BaseManager):
+    '''商品模型逻辑管理器类'''
+    def get_goods_by_id(self, goods_id):
+        '''根据商品id查询商品信息'''
+        # 根据商品id查询出其详情图片
+        goods = self.get_one_object(id=goods_id)
+
+        # 此处images是Image类型或者QuerySet类型
+        images = Image.objects.get_image_by_goods_id(goods_id=goods_id)
+
+        # 给goods增加一个对象属性img_url, 记录商品详情图片
+        goods.img_url = images.img_url
+        # 返回goods
+        return goods
+
+
 # Create your models here.
 class GoodsManager(BaseManager):
     """商品模型管理器类"""
@@ -31,10 +47,24 @@ class GoodsManager(BaseManager):
             goods_list = goods_list[:limit]
         return goods_list
 
+    def get_goods_by_id_with_image(self, goods_id):
+        '''根据商品的id查询商品信息，并查询其详情图片'''
+        # 根据商品id查询出其详情图片
+        goods = self.get_goods_by_id(goods_id=goods_id)
+
+        # 此处images是Image类型或者QuerySet类型
+        images = Image.objects.get_image_by_goods_id(goods_id=goods_id)
+
+        # 给goods增加一个对象属性img_url, 记录商品详情图片
+        goods.img_url = images.img_url
+        # 返回goods
+        return goods
+
     def get_goods_by_id(self, goods_id):
         '''根据商品id查询商品信息'''
         obj = self.get_one_object(id=goods_id)
         return obj
+
 
 class Goods(BaseModel):
     '''商品模型类'''
@@ -65,7 +95,9 @@ class Goods(BaseModel):
     goods_sales = models.IntegerField(default=0, verbose_name='商品销量')
     goods_status = models.IntegerField(choices=goods_status_choice, default=ONLINE, verbose_name='商品状态')
     goods_unite = models.CharField(max_length=20, verbose_name='商品单位')
+
     objects = GoodsManager()
+    objects_logic = GoodsLogicManager()
 
     class Meta:
         db_table = 's_goods'
@@ -95,6 +127,7 @@ class Image(BaseModel):
     img_url = models.ImageField(upload_to='goods', verbose_name='图片路径')
 
     objects = ImageManager()
+
 
     class Meta:
         db_table = 's_goods_image'

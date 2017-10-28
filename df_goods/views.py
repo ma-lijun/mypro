@@ -38,10 +38,21 @@ def home_list_page(request):
 
 
 def goods_detail(request, goods_id):
+
+    """
+        # 方法一：
     # 根据商品id获取商品信息
     goods = Goods.objects.get_goods_by_id(goods_id=goods_id)
     # 根据商品类型查询新品信息
     # 根据商品id查询出一张商品的详情图片
     images = Image.objects.get_image_by_goods_id(goods_id=goods_id)
+    
+        # 方法二：
+    # 利用一种办法将商品和图片的查询放到商品的一个方法中
+    goods = Goods.objects.get_goods_by_id_with_image(goods_id=goods_id)
+    """
+    # 方法三：
+    # 为商品增加一个同名的可以查询商品和图片的方法，起一个不同的管理器类名
+    goods = Goods.objects_logic.get_goods_by_id(goods_id=goods_id)
     goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods.goods_type_id, limit=2, sort='new')
-    return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new, 'images': images})
+    return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new})
