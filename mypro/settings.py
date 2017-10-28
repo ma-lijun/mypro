@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'df_user',
     'celery',
+    'tinymce',  # 富文本编辑器
+    'df_goods',
     'djcelery',  # 注册celery应用
 ]
 
@@ -51,7 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'utils.middleware.UrlPathRecordMiddleWare',  #  将自己写的中间件注册进来
+    'utils.middleware.UrlPathRecordMiddleWare',  # 将自己写的中间件注册进来
 )
 
 ROOT_URLCONF = 'mypro.urls'
@@ -110,6 +112,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')  # 设置上传文件的目录
 
 
 # 发送邮件配置
@@ -131,3 +134,11 @@ EMAIL_FROM = 'dailyfresh<mlj0503@126.com>'
 import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'redis://127.0.0.1:6379/2'
+
+
+# 富文本编辑器配置
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}

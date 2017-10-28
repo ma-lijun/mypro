@@ -47,3 +47,7 @@ class BaseManager(models.Manager):
         obj.save()
         return obj
 
+    def get_object_list(self, filters={}, order_by=('-pk',)):
+        '''根据条件获取查询集并排序'''
+        object_list = self.filter(**filters).order_by(*order_by)
+        return object_list
