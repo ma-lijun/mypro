@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from df_goods.models import Goods
+from df_goods.models import Goods, Image
 from df_goods.enums import *
 
 # Create your views here.
@@ -35,3 +35,13 @@ def home_list_page(request):
         'frozen': frozen, 'frozen_new': frozen_new,
     }
     return render(request, 'df_goods/index.html', context)
+
+
+def goods_detail(request, goods_id):
+    # 根据商品id获取商品信息
+    goods = Goods.objects.get_goods_by_id(goods_id=goods_id)
+    # 根据商品类型查询新品信息
+    # 根据商品id查询出一张商品的详情图片
+    images = Image.objects.get_image_by_goods_id(goods_id=goods_id)
+    goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods.goods_type_id, limit=2, sort='new')
+    return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new, 'images': images})

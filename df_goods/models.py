@@ -31,6 +31,10 @@ class GoodsManager(BaseManager):
             goods_list = goods_list[:limit]
         return goods_list
 
+    def get_goods_by_id(self, goods_id):
+        '''根据商品id查询商品信息'''
+        obj = self.get_one_object(id=goods_id)
+        return obj
 
 class Goods(BaseModel):
     '''商品模型类'''
@@ -67,3 +71,30 @@ class Goods(BaseModel):
         db_table = 's_goods'
 
 
+class ImageManager(BaseManager):
+    '''商品详情图片管理器类'''
+    def get_image_by_goods_id(self, goods_id): # 61
+        '''根据商品的id查询商品详情图片'''
+        images = self.get_object_list(filters={'goods_id':goods_id}) # 返回值是一个查询集
+        if images.exists():
+            # 查询集中有图片数据
+            # 取出images查询集中的第一个元素，重新赋值给images
+            # 此时images对象的类型为Image
+            images = images[0]
+        else:
+            # 查询集中没有图片
+            # 此时images的类型为QuerySet,给images增加一个属性img_url,防止出错
+            images.img_url = ''
+        # 返回images,返回的类型可能是Image或这QuerySet,但都有img_url属性
+        return images
+
+
+class Image(BaseModel):
+    '''商品详情图片模型类'''
+    goods = models.ForeignKey('Goods', verbose_name='所属商品')
+    img_url = models.ImageField(upload_to='goods', verbose_name='图片路径')
+
+    objects = ImageManager()
+
+    class Meta:
+        db_table = 's_goods_image'
