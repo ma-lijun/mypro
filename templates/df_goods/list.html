@@ -6,7 +6,7 @@
         <div class="breadcrumb">
 	    	<a href="#">全部分类</a>
 	    	<span>></span>
-	    	<a href="#">{{ type-title }}</a>
+	    	<a href="#">{{ type_title }}</a>
 	    </div>
 
 	    <div class="main_wrap clearfix">
@@ -34,7 +34,7 @@
 			</div>
 
 			<ul class="goods_type_list clearfix">
-                {% for good in goods %}
+                {% for good in goods_li %}
                     <li>
                         <a href="detail.html"><img src="{% static good.goods_image %}"></a>
                         <h4><a href="detail.html">{{ good.goods_name }}</a></h4>
@@ -50,14 +50,21 @@
 			</ul>
 
 			<div class="pagenation">
-				<a href="#"><上一页</a>
-				<a href="#" class="active">1</a>
-				<a href="#">2</a>
-				<a href="#">3</a>
-				<a href="#">4</a>
-				<a href="#">5</a>
-				<a href="#">下一页></a>
+                {% if goods_li.has_previous %}
+				    <a href="/list/{{ type_id }}/{{ goods_li.previous_page_number }}/?sort={{ sort }}">上一页</a>
+                {% endif %}
+                {% for pindex in pages %}
+                    {% if pindex == goods_li.number %}
+				        <a href="/list/{{ type_id }}/{{ pindex }}/?sort={{ sort }}" class="active">{{ pindex }}</a>
+                    {% else %}
+                        <a href="/list/{{ type_id }}/{{ pindex }}/?sort={{ sort }}">{{ pindex }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if goods_li.has_next %}
+				    <a href="/list/{{ type_id }}/{{ goods_li.next_page_number }}/?sort={{ sort }}">下一页></a>
+                {% endif %}
 			</div>
+
 		</div>
 
 		</div>
