@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from df_goods.models import Goods, Image
 from df_goods.enums import *
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -56,3 +57,53 @@ def goods_detail(request, goods_id):
     goods = Goods.objects_logic.get_goods_by_id(goods_id=goods_id)
     goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods.goods_type_id, limit=2, sort='new')
     return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new})
+
+
+def goods_list(request, goods_type_id, pindex):
+    print(request.path)
+    '''商品列表页展示'''
+    # 获取商品的排序方式
+    sort = request.GET.get('sort', 'default')
+    # 商品列表
+    goods_li = Goods.objects.get_goods_by_type(goods_type_id=goods_type_id, sort=sort)
+    # 查询新品信息
+    goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods_type_id, sort='new', limit=2)
+    # 进行分页
+    paginator = Paginator.page(goods_li, 1)
+    # 取第pindex页内容, 参数传递页码
+    pindex = int(pindex)
+    goods_li = paginator.page(pindex)
+    # 页码控制，获取总页面数目
+    num_pages = paginator.num_pages
+    '''
+    0.如果不足5页,显示全部页码
+    1.当前页是前三页,显示1-5页
+    2.当前页是后三页,显示后5页
+    3.既不
+    '''
+    if num_pages < 5:
+        pages = range(1, num_pages+1)
+    elif pindex <= 3:
+        pages = range(1, 6)
+    elif num_pages - pindex <= 2:
+        pages = range(num_pages-4, num_pages+1)
+    else:
+        pages = range(pindex - 2, pindex+3)
+
+    return render(request, 'df_goods/list.html', {'goods': goods_li,
+                                                  'goods_new': goods_new,
+                                                  'type_id': goods_type_id,
+                                                  "sort": sort,
+                                                  'type-title': GOODS_TYPE[goods_type_id],
+                                                  'pages': pages})
+
+
+
+
+
+
+
+
+
+
+

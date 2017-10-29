@@ -34,12 +34,12 @@ class GoodsManager(BaseManager):
         elif sort == 'hot':
             '''按照商品销量查询商品信息'''
             order_by = ('-goods_sales', )
-        elif sort == ('goods_price',):
+        elif sort == 'price':
             # 按照商品价格排序
             order_by = ('goods_price', )
 
         # get_object_list 中 filters是字典类型， order_by是元组类型
-        goods_list = self.get_object_list(filters={'goods_type_id':goods_type_id},order_by=order_by )
+        goods_list = self.get_object_list(filters={'goods_type_id': goods_type_id}, order_by=order_by )
 
         # 根据传入的limit取出查询集中的几条数据
         if limit:
