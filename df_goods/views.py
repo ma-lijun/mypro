@@ -69,11 +69,11 @@ def goods_list(request, goods_type_id, pindex):
     # 查询新品信息
     goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods_type_id, sort='new', limit=2)
     # # 进行分页   错误的用法
-    paginator = Paginator.page(goods_li, 1)
+    # paginator = Paginator.page(goods_li, 1)
 
 
     # 进行分页
-    # paginator = Paginator(goods_li, 1)
+    paginator = Paginator(goods_li, 2)
     # 取第pindex页的内容
     pindex = int(pindex)
     goods_li = paginator.page(pindex)
