@@ -68,12 +68,17 @@ def goods_list(request, goods_type_id, pindex):
     goods_li = Goods.objects.get_goods_by_type(goods_type_id=goods_type_id, sort=sort)
     # 查询新品信息
     goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods_type_id, sort='new', limit=2)
-    # 进行分页
+    # # 进行分页   错误的用法
     paginator = Paginator.page(goods_li, 1)
-    # 取第pindex页内容, 参数传递页码
+
+
+    # 进行分页
+    # paginator = Paginator(goods_li, 1)
+    # 取第pindex页的内容
     pindex = int(pindex)
     goods_li = paginator.page(pindex)
-    # 页码控制，获取总页面数目
+    # todo: 进行页码控制
+    # 获取总页数
     num_pages = paginator.num_pages
     '''
     0.如果不足5页,显示全部页码
@@ -90,11 +95,11 @@ def goods_list(request, goods_type_id, pindex):
     else:
         pages = range(pindex - 2, pindex+3)
 
-    return render(request, 'df_goods/list.html', {'goods': goods_li,
+    return render(request, 'df_goods/list.html', {'goods_li': goods_li,
                                                   'goods_new': goods_new,
                                                   'type_id': goods_type_id,
                                                   "sort": sort,
-                                                  'type-title': GOODS_TYPE[goods_type_id],
+                                                  'type-title': GOODS_TYPE[int(goods_type_id)],
                                                   'pages': pages})
 
 
