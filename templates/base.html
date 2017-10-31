@@ -8,7 +8,9 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     {# 网页顶部引入文件块 #}
-	{% block topfiles %}{% endblock topfiles %}
+	{% block topfiles %}
+        <script  src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+	{% endblock topfiles %}
 </head>
 <body>
 {# 网页顶部欢迎信息块 #}
@@ -78,5 +80,23 @@
     {% block bottom %}{% endblock bottom %}
     {# 网页底部引入文件块 #}
 	{% block bottomfiles %}{% endblock bottomfiles %}
+    {#獲取購物車中商品的數量#}
+    {% block cart_count %}
+        <script>
+            $(function () {
+                index = $('.login_btn').text().indexOf('登录')
+                alert(111)
+                if(index < 0){
+                    // 已登錄
+                    // 发起一个ajax请求获取用户购物车商品的总数
+                    $.get('/cart/count/',function (data) {
+                        // 返回購物車中數目  返回形式{'res':商品總數}
+                        $('#show_count').text(data.res)
+                    })
+                }
+            })
+        </script>
+    {% endblock cart_count %}
+
 </body>
 </html>
