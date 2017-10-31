@@ -27,9 +27,20 @@ def cart_add(request):
         # 库存不足
         return JsonResponse({'res': 0})
 
+
 @login_requird
+@require_GET
 def cart_count(request):
     '''獲取購物車中商品數目'''
     passport_id = request.session.get('passport_id')
     res = Cart.objects.get_court_count_by_passport_id(passport_id=passport_id)
     return JsonResponse({'res': res})
+
+
+@login_requird
+def cart_show(request):
+    '''显示购物车页面'''
+    passport_id = request.session.get('passport_id')
+    # 1.获取用户购物车信息 get_cart_list_by_passport(self, passport_id)
+    cart_list = Cart.objects.get_cart_list_by_passport(passport_id=passport_id)
+    return render(request, 'df_cart/cart.html', {'cart_list': cart_list})
