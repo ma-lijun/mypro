@@ -2,9 +2,73 @@
 {% load staticfiles %}
 {% block title %}天天生鲜-商品详情{% endblock title %}
 
+{# 商品增加减少，手动输入的js代码 #}
+{% block topfiles %}
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+    $(function () {
+        // 计算商品的总价
+        function update_total_price() {
+            // 获取商品的价格和数量
+            goods_price = $('.show_pirze').children('em').text()
+            goods_price = parseFloat(goods_price)
+            goods_count = $('.num_show').val()
+            goods_count = parseInt(goods_count)
+            // alert(goods_price+":"+goods_count)
+            // 计算商品的总价
+            total_price = goods_price*goods_count
+            // 设置商品总价
+            $('.total').children('em').text(total_price.toFixed(2)+'元')
+        }
+
+        update_total_price()
+
+        // 商品数目增加
+        $('.add').click(function () {
+            // 1.获取原有商品的数目
+            goods_count = $('.num_show').val()
+            // 2.加1
+            goods_count = parseInt(goods_count)+1
+            // 3.重新设置商品数目
+            $('.num_show').val(goods_count)
+            // 4.更新总价
+            update_total_price()
+        })
+
+        // 商品数目减少
+        $('.minus').click(function () {
+            // 1.获取原有商品的数目
+            goods_count = $('.num_show').val()
+            // 2.减1
+            goods_count = parseInt(goods_count)-1
+            if (goods_count == 0){
+                goods_count = 1
+            }
+            // 3.重新设置商品数目
+            $('.num_show').val(goods_count)
+            // 4.更新总价
+            update_total_price()
+        })
+
+        // 手动输入商品数目
+        $('.num_show').blur(function () {
+            // 1.获取原有商品的数目
+            goods_count = $('.num_show').val()
+            // 2.检验输入是否合法
+            if (isNaN(goods_count)||goods_count.trim().length==0||parseInt(goods_count)<=0)
+            {
+                goods_count = 1
+            }
+            // 3.重新设置商品数目
+            $('.num_show').val(parseInt(goods_count))
+            // 4.更新总价
+            update_total_price()
+        })
+    })
+    </script>
+{% endblock topfiles %}
+
     {% block main_content %}
-
-
 	    <div class="breadcrumb">
 		<a href="#">全部分类</a>
 		<span>></span>
@@ -14,7 +78,7 @@
 	</div>
 
 	    <div class="goods_detail_con clearfix">
-		<div class="goods_detail_pic fl"><img src="{% static images.img_url %}"></div>
+		<div class="goods_detail_pic fl"><img src="{% static goods.img_url %}"></div>
 
 		<div class="goods_detail_list fr">
 			<h3>{{ goods.goods_name }}</h3>
@@ -34,7 +98,7 @@
 			<div class="total">总价：<em>16.80元</em></div>
 			<div class="operate_btn">
 				<a href="javascript:;" class="buy_btn">立即购买</a>
-				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+				<a href="javascript:;" goods_id={{ goods.id }} class="add_cart" id="add_cart">加入购物车</a>
 			</div>
 		</div>
 	</div>
@@ -80,27 +144,57 @@
         <div class="add_jump"></div>
     {% endblock bottom %}
     {# 网页底部引入文件块 #}
-	{% block bottomfiles %}
-        <script type="text/javascript" src="js/jquery-1.12.2.js"></script>
-	    <script type="text/javascript">
-		var $add_x = $('#add_cart').offset().top;
+{% block bottomfiles %}
+	<script type="text/javascript">
+        var $add_x = $('#add_cart').offset().top;
 		var $add_y = $('#add_cart').offset().left;
 
 		var $to_x = $('#show_count').offset().top;
 		var $to_y = $('#show_count').offset().left;
 
-		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
-		$('#add_cart').click(function(){
-			$(".add_jump").stop().animate({
-				'left': $to_y+7,
-				'top': $to_x+7},
-				"fast", function() {
-					$(".add_jump").fadeOut('fast',function(){
-						$('#show_count').html(2);
-					});
+        $('#add_cart').click(function () {
 
-			});
-		})
+            index = $('.login_btn').text().indexOf('登录')
+            //alert(index) 如果index=-1,说明用户已登录
+            if (index >= 0){
+                // 未登录
+                alert('请先登录')
+            }
+
+            else
+            {
+
+                // 用户已登录
+                // 发起ajax请求，携带两个参数，一个商品的id,另一个是商品的数量
+                goods_id = $(this).attr('goods_id')
+                goods_count = $('.num_show').val()
+                // alert(goods_id+':'+goods_count)
+                $.get('/cart/add/?goods_id='+goods_id+'&goods_count='+goods_count, function (data) {
+                    // 添加成功 {'res':1} 添加失败 {'res':0}
+                    if (data.res == 0){
+                        alert('添加购物车失败,库存不足')
+                    }
+                    else
+                    {
+                        $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+                        $(".add_jump").stop().animate({
+                            'left': $to_y+7,
+                            'top': $to_x+7},
+                            "fast", function() {
+                                $(".add_jump").fadeOut('fast',function(){
+                                    // 1.获取原有的数目
+                                    goods_total = $('#show_count').text()
+                                    // 2.添加数目
+                                    goods_total = parseInt(goods_total)+parseInt(goods_count)
+                                    // 3.重新设置商品的数目
+                                    $('#show_count').text(goods_total)
+                                });
+
+                        });
+                    }
+                })
+            }
+        })
 	</script>
-	{% endblock bottomfiles %}
+{% endblock bottomfiles %}
 

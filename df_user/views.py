@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from df_user.tasks import register_success_send_mail
 from django.views.decorators.http import require_GET,require_POST,require_http_methods
-from utils.decorators import loginrequied
+from utils.decorators import login_requird
 
 
 # 使用django的内置装饰器功能，显示访问方式,优化register接口设计，删除多余接口register_handle
@@ -115,7 +115,7 @@ def logout(request):
 
 
 # /user/
-@loginrequied
+@login_requird
 def user(request):
     passport_id = request.session['passport_id']
     # 根据用户id获取默认收货地址
@@ -125,7 +125,7 @@ def user(request):
 
 # /user/address/
 # @require_http_methods['GET','POST']
-@loginrequied
+@login_requird
 def address(request):
     passport_id = request.session['passport_id']
     # 根据用户id获取默认收货地址
@@ -146,6 +146,6 @@ def address(request):
 
 
 # /user/order/
-@loginrequied
+@login_requird
 def order(request):
     return render(request, 'df_user/user_center_order.html', {'page': 'order'})
