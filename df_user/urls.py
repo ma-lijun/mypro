@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^address/$', views.address),  # 用户中心地址
     url(r'^order/$', views.order),  # 用户中心内订单
     url(r'^$', views.user),  # 用户中心内订单
-
+    url(r'^place/$', views.show_place),  # 展示订单页
     url(r'^logout/$', views.logout),  # 退出登录
 
 ]

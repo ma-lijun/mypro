@@ -8,6 +8,7 @@ from df_user.tasks import register_success_send_mail
 from django.views.decorators.http import require_GET,require_POST,require_http_methods
 from utils.decorators import login_requird
 from df_user.models import BrowseHistory
+from df_cart.models import Cart
 
 
 # 使用django的内置装饰器功能，显示访问方式,优化register接口设计，删除多余接口register_handle
@@ -153,3 +154,21 @@ def address(request):
 @login_requird
 def order(request):
     return render(request, 'df_user/user_center_order.html', {'page': 'order'})
+
+
+# /order/place/
+@require_POST
+@login_requird
+def show_place(request):
+    '''显示提交订单页面'''
+    # 查询用户的默认收货地址
+    passport_id = request.session.get('passport_id')
+    addr = Address.objects.get_one_address(passport_id=passport_id)
+    # 获取用户的选中的购物车id的列表
+    cart_id_list = request.POST.getlist('cart_id_list')
+    # print(cart_id_list)
+    # 查询id在cart_id_list这个列表中的购物车记录信息
+    cart_list = Cart.objects.get_cart_list_by_id_list(cart_id_list=cart_id_list)
+    # 把cart_id_list转化成字符串　[1,2,3]->1,2,3
+    cart_id_list = ','.join(cart_id_list)
+    return render(request, 'df_order/place_order.html', {'cart_list':cart_list, 'addr':addr, 'cart_id_list':cart_id_list})

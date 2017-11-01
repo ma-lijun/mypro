@@ -2,7 +2,7 @@
 from django.shortcuts import redirect
 
 
-def loginrequied(view_func):
+def login_requird(view_func):
     def wrapper(request, *args, **kwargs):
         if request.session.has_key('islogin'):
             # 用户已经登录

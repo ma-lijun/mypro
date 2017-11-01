@@ -45,7 +45,6 @@ class CartManager(BaseManager):
             res = 0
         else:
             res = res_dict['goods_count__sum']
-        print(res)
         return res
 
     def get_cart_list_by_passport(self, passport_id):
@@ -53,6 +52,27 @@ class CartManager(BaseManager):
         cart_list = self.get_object_list(filters={'passport_id':passport_id})
         return cart_list
 
+    def del_cart_info(self,goods_id, passport_id):
+        '''删除购物车记录'''
+        goods_info = self.get_one_cart_info(goods_id=goods_id, passport_id=passport_id)
+        try:
+            goods_info.delete()
+            return True
+        except:
+            return False
+
+    def update_cart_info(self, passport_id, goods_id, goods_count):
+        '''更新购物车记录信息'''
+        cart_info = self.get_one_cart_info(passport_id=passport_id, goods_id=goods_id)
+        print(cart_info)
+        if goods_count <= cart_info.goods.goods_stock:
+            # 库存充足
+            cart_info.goods_count = goods_count
+            cart_info.save()
+            return True
+        else:
+            # 库存不足
+            return False
 
 class Cart(BaseModel):
     passport = models.ForeignKey('df_user.Passport', verbose_name='账户名稱')

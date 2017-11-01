@@ -44,3 +44,38 @@ def cart_show(request):
     # 1.获取用户购物车信息 get_cart_list_by_passport(self, passport_id)
     cart_list = Cart.objects.get_cart_list_by_passport(passport_id=passport_id)
     return render(request, 'df_cart/cart.html', {'cart_list': cart_list})
+
+
+# /cart/del/?goods_id=goods_id
+@login_requird
+def cart_del(request):
+    '''删除购物车记录'''
+    # 获取商品和账户信息
+    goods_id = request.GET.get('goods_id')
+    passport_id = request.session.get('passport_id')
+    # 根据商品id 和 账户id 删除购物车记录 Cart.objects.del_cart_info()
+    res = Cart.objects.del_cart_info(goods_id, passport_id)
+    if res:
+        return JsonResponse({'res': 1})
+    else:
+        return JsonResponse({'res': 0})
+
+
+@require_GET
+@login_requird
+def cart_update(request):
+    '''更新购物车信息'''
+    # 1.接收goods_id和goods_count
+    goods_id = request.GET.get('goods_id')
+    goods_count = request.GET.get('goods_count')
+    passport_id = request.session.get('passport_id')
+    print(goods_id, goods_count, passport_id)
+    # 2.更新购物车中商品的信息
+    res = Cart.objects.update_cart_info(passport_id=passport_id, goods_id=goods_id, goods_count=int(goods_count))
+    # 3.判断res并返回json数据
+    if res:
+        # 更新成功
+        return JsonResponse({'res':1})
+    else:
+        # 更新失败
+        return JsonResponse({'res':0})

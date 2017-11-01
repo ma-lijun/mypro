@@ -40,10 +40,10 @@ class BaseManager(models.Manager):
         for k in kwd:
             if k not in valid_fields:
                 filters.pop(k)
-
         # 新增元素
         model_class = self.model
         obj = model_class(**filters)
+        print(obj)
         obj.save()
         return obj
 
