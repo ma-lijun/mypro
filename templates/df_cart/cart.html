@@ -263,7 +263,7 @@
 		<li class="col05">小计</li>
 		<li class="col06">操作</li>
 	</ul>
-    <form method="post" action="/cart/place/">
+    <form method="post" action="/order/place/">
         {% csrf_token %}
 
         {% for cart in cart_list %}

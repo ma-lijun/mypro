@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'tinymce',  # 富文本编辑器
     'df_goods',
     'df_cart',
+    'df_order',  # 订单模块
     'djcelery',  # 注册celery应用
     'haystack',  # 全文检索框架，支持多种搜索引擎
 ]
