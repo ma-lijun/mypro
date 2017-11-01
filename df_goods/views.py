@@ -2,6 +2,7 @@ from django.shortcuts import render
 from df_goods.models import Goods, Image
 from df_goods.enums import *
 from django.core.paginator import Paginator
+from df_user.models import BrowseHistory
 
 # Create your views here.
 
@@ -56,7 +57,12 @@ def goods_detail(request, goods_id):
     # 为商品增加一个同名的可以查询商品和图片的方法，起一个不同的管理器类名
     goods = Goods.objects_logic.get_goods_by_id(goods_id=goods_id)
     goods_new = Goods.objects.get_goods_by_type(goods_type_id=goods.goods_type_id, limit=2, sort='new')
-    return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new})
+    # 3.获取商品类型标题
+    type_title = GOODS_TYPE[goods.goods_type_id]
+    if request.session.has_key('islogin'):
+        passport_id = request.session.get('passport_id')
+        BrowseHistory.objects.add_one_history(passport_id=passport_id, goods_id=goods_id)
+    return render(request,'df_goods/detail.html', {'goods': goods, 'goods_new': goods_new, 'type_title': type_title})
 
 
 def goods_list(request, goods_type_id, pindex):

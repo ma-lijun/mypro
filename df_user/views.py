@@ -7,6 +7,7 @@ from django.conf import settings
 from df_user.tasks import register_success_send_mail
 from django.views.decorators.http import require_GET,require_POST,require_http_methods
 from utils.decorators import login_requird
+from df_user.models import BrowseHistory
 
 
 # 使用django的内置装饰器功能，显示访问方式,优化register接口设计，删除多余接口register_handle
@@ -120,7 +121,9 @@ def user(request):
     passport_id = request.session['passport_id']
     # 根据用户id获取默认收货地址
     addr = Address.objects.get_one_address(passport_id=passport_id)
-    return render(request, 'df_user/user_center_info.html', {'page': 'user', 'addr': addr})
+    # 获取用户的历史浏览记录
+    browse_li = BrowseHistory.objects.get_browse_list_by_passport(passport_id=passport_id, limit=5)
+    return render(request, 'df_user/user_center_info.html', {'page': 'user', 'addr': addr, 'browse_li': browse_li})
 
 
 # /user/address/
@@ -139,9 +142,10 @@ def address(request):
         recipient_addr = request.POST.get('recipient_addr')
         recipient_phone = request.POST.get('recipient_phone')
         zip_code = request.POST.get('zip_code')
-        print(recipient_addr)
-        addr = Address.objects.add_one_address(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr,
+        # 2.添加进数据库
+        Address.objects.add_one_address(passport_id=passport_id, recipient_name=recipient_name, recipient_addr=recipient_addr,
                                                recipient_phone=recipient_phone, zip_code=zip_code, is_default=False)
+        # 3.刷新address页面，重定向
         return redirect('/user/address/')
 
 
