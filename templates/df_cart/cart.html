@@ -269,7 +269,7 @@
         {% for cart in cart_list %}
             <ul class="cart_list_td clearfix">
 {#                <li class="col01"><input type="checkbox" goods_id = {{ cart.goods_id }} name="" checked></li>#}
-                <li class="col01"><input type="checkbox" name="cart_id_list"  value="{{ cart_info.id }}" checked></li>
+                <li class="col01"><input type="checkbox" name="cart_id_list"  value="{{ cart.id }}"></li>
                 <li class="col02"><img src="{% static cart.goods.goods_image %}"></li>
                 <li class="col03">{{ cart.goods.goods_name }}<br><em>{{ cart.goods.goods_price }}元/{{ cart.goods.goods_unite }}</em></li>
                 <li class="col04">{{ cart.goods.goods_unite }}</li>

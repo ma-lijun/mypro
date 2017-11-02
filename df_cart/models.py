@@ -74,6 +74,12 @@ class CartManager(BaseManager):
             # 库存不足
             return False
 
+    def get_cart_list_by_id_list(self, cart_id_list):
+        '''查询购物车记录信息'''
+        cart_list = self.get_object_list(filters={'id__in':cart_id_list})
+        # self.filter(id__in = cart_id_list)
+        return cart_list
+
 class Cart(BaseModel):
     passport = models.ForeignKey('df_user.Passport', verbose_name='账户名稱')
     goods = models.ForeignKey('df_goods.Goods', verbose_name='商品名稱')
