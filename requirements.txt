@@ -29,7 +29,7 @@ incremental==17.5.0
 jieba==0.39
 jsonpickle==0.9.5
 kombu==3.0.37
-lxml==4.0.0
+lxml==4.6.2
 markdown2==2.3.4
 mistune==0.7.4
 olefile==0.44
